@@ -1,66 +1,97 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 //global variable assignment 
 struct node {
 	char username[20]; 
-	int *socket;
-	struct node *next, *prev; //next and previous address node linked 
+	int socket;
+	struct node *next; //next and previous address node linked 
 };
 
 
-//int add_contact(char *name, int *socket); // addcontact prototype
+int add_contact(char *name, int socket,struct node *root); // addcontact prototype
+int pop_contact(char *name, struct node *root); // pop prototype
+int read(struct node *root); // read prototype
 
 int main(){
-	char name, *a_name;
-	int socket, *a_socket;
-	scanf("%s %d", name, &socket);
-	a_name = &name;
-	a_socket = &socket;
-	add_contact(a_name, a_socket);
-}
-
-
-
-int add_contact(char *name, int *socket){
-	int i=0, contact_amount=0;
+	int i,socket;
+	char name[20], *a_name;
 	struct node *root, *current;
-
-//########### set root node ############
+	
 	root = malloc(sizeof(struct node));
 	root->next = 0;
-	root->prev = 0;
 	current = root;
+	for(i=0;i<5;i++){
 	
-//############ shift current node to end of list ###########
-	while ( current->next != 0)
-	{
-        current = current->next;
+		scanf("%s %d", name, &socket);
+		a_name = name;
+		add_contact(a_name, socket, root);
+		
 	}
+	printf("Before pop contact\n");
+	read(root);
+	scanf("%s", name);
+	pop_contact(name, root);
+	printf("After pop contact\n");
+	read(root);
+}
+
+//------------------------------------------------------------------------------
+
+int add_contact(char *name, int socket, struct node *root){
 	
-//########## create new node ##########	
+	int i=0, contact_amount=0;
+	struct node *current;
+
+	current = root;
+	while ( current->next != 0)
+        current = current->next;
+	
+	//########## create new node ##########	
 
 	current->next = malloc(sizeof(struct node));
-	current->next->prev = current;
 	current = current->next;
 	current->next = 0;
+	
 	strcpy(current->username, name);
 	current->socket = socket; 
+	
 	contact_amount++;
-			
-// #########  read node  ##########
-/*	current = root;
-	while ( current->next != 0 )
-    {
-    	current = current->next;
-    	printf("%s\n%d\n", current->username, current->socket);
-	}	
-*/
-	
-	
-	
-	
+					
 }
+
+//-------------------------------------------------------------------------------
+
+int pop_contact(char *name,struct node *root){
+	struct node *current, *temp;
+	current = root;
+	
+	while(current->next != 0){
+		if(strcmp(current->next->username, name) == 0){
+			temp = current->next;
+			current->next = current->next->next;
+			free(temp);				  // clear(pop) memory of disconect node.
+			return 0;
+		}
+		current = current->next;
+	}
+}
+
+//---------------------------------------------------------------------------------
+
+	
+int read(struct node *root){
+	struct node *current;
+	current = root;
+	while(current->next != 0){
+		current = current->next;
+		printf("----------------------\n");
+		printf("User : %s\nsocket : %d\n", current->username, current->socket);
+		printf("----------------------\n");
+	}
+}
+
 
 
 
