@@ -13,6 +13,7 @@ struct node {
 int add_contact(char *name, int socket,struct node *root); // addcontact prototype
 int pop_contact(char *name, struct node *root); // pop prototype
 int read(struct node *root); // read prototype
+int find_contact(char *name, struct node *root); // find prototype
 
 int main(){
 	int i,socket;
@@ -35,6 +36,11 @@ int main(){
 	pop_contact(name, root);
 	printf("After pop contact\n");
 	read(root);
+	
+	printf("\n----------- Test Find contact  -------------\n");
+	scanf("%s", name);
+	a_name = name;
+	printf("Username : %s\nSocket : %d", name, find_contact(name,root));
 }
 
 //------------------------------------------------------------------------------
@@ -92,7 +98,17 @@ int read(struct node *root){
 	}
 }
 
-
+int find_contact(char *name,struct node *root){
+	struct node *current;
+	current = root;
+	while(current->next != 0){
+		if(strcmp(current->next->username, name) == 0){
+			return current->next->socket;
+		}
+		current = current->next;
+	}
+	return -1;
+}
 
 
 
