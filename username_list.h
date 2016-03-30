@@ -3,7 +3,7 @@
 #include <string.h>
 
 //global variable assignment
-struct usernameNode {
+struct node {
 	char username[20];
 	int socket;
 	struct node *next; //next and previous address node linked
