@@ -3,7 +3,7 @@
 #include <string.h>
 #include <ncurses.h>
 
-#define LENLINE 1000
+#define LENLINE 1000 //define limit lenght of each one line
 
 //global variable assignment
 struct node {
@@ -18,51 +18,41 @@ int add_line(char *string);
 int draw_new(char *string);
 int draw_old_line(int height_screen, int option);
 
-int main(){
+int example_test(){
 
 	//Initial username's linked list
 	root = malloc(sizeof(struct node));
 	root->next = 0;
 	current = root;
 
-	//Initial ncurse
-	int parent_x, parent_y;
-	int new_x, new_y;
-	int score_size = 3;
-	int i;
 	char buffer[LENLINE];
+	int parent_x, parent_y;
+	int i, ch;
 
+	//Initial ncurse
 	initscr();
 	curs_set(FALSE);
 
 	// get our maximum window dimensions
 	getmaxyx(stdscr, parent_y, parent_x);
 
-	// set up initial windows
-	WINDOW *area = newwin(parent_y - score_size, parent_x, 0, 0);
-
 	keypad(stdscr, TRUE);
 	scrollok(stdscr, 1);
 
-	for (i=0;i<100;i++) {
-		sprintf(buffer, "Testing scroll on number: %d\n", i);
+	//Print testing message
+	for (i=1;i<=50;i++) {
+		sprintf(buffer, "Testing scroll on number: %d", i);
 		draw_new(buffer);
 	}
 	refresh();
 
-	int ch;
+	//Get Arrow's key from keyboard for scroll up/down
 	while ((ch = getch()) && ch != 'q')
 	{
 		if (ch == KEY_UP)
-		{
-			scrl(-1);
 			draw_old_line(parent_y, 1);
-		}
 		else if (ch == KEY_DOWN )
-		{
-			scrl(1);
 			draw_old_line(parent_y, 2);
-		}
 	}
 
 	refresh();
@@ -73,6 +63,9 @@ int main(){
 }
 
 int add_line(char *string) {
+
+	//move pointer to last node
+	while(current->next != 0) current = current->next;
 
 	// create new node
 	current->next = malloc(sizeof(struct node));
@@ -100,7 +93,7 @@ int draw_new(char *string){
 	bottom_line = line_amount;
 
 	//Print string on screen and refresh screen
-	printw(screen->string);
+	printw("%s\n", string);
 	refresh();
 
 	return 0;
@@ -109,35 +102,55 @@ int draw_new(char *string){
 
 int draw_old_line(int height_screen, int option){
 
-	//option: 1 is scroll up, 2 is scroll down
+	/*
+		This function is for print line that is not display on screen
+		In other hand, this function is for print string that is over-screen
+
+		#let know "option"
+		option is for say function that you will scroll up or down.
+		option: 1 is scroll up.
+		option: 2 is scroll down.
+	*/
 
 	int desc_line;
-	char buffer[10];
 
+	//Set destination of line that program have to read for display from node
 	if (option == 1) desc_line = bottom_line - height_screen;
 	else if (option == 2) desc_line = bottom_line + 1;
 
+	//Initial current pointer for search in linked list
 	current = root;
+	while (current->next != 0 && current->next->line_number <= desc_line) current = current->next;
 
-	if (height_screen > 0) {
+	/*
+		### This comment is for if-else below ###
 
-		while (current->line_number < desc_line) current = current->next;
+		- This section is for move screen up or down and print string from
+		buffer list.
+		- move(int y, int x) use to move cursor for print to top-left of screen
+		to print first line.
+		- FOR if: Move screen up and print string from buffer-list
+		- FOR else if: Move screen down and print string from buffer-list
+	*/
 
-		sprintf(buffer, "%d\n", bottom_line);
+	if (option == 1 && bottom_line >= height_screen){
 
-		if (option == 1){
-			mvprintw(0, 0, current->string);
-			bottom_line--;
-		}
-		else if (option == 2) {
-			mvprintw(height_screen - 1, 0, current->string);
-			bottom_line++;
-		}
+		scrl(-1);
+		move(0, 0);
+		printw(current->string);
+		bottom_line--;
+
+	}
+	else if (option == 2 && bottom_line < line_amount - 1) {
+
+		scrl(1);
+		move(height_screen - 1, 0);
+		printw(current->string);
+		bottom_line++;
 
 	}
 
 	refresh();
-
 	return 0;
 
 }
