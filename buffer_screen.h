@@ -3,7 +3,7 @@
 #include <string.h>
 #include <ncurses.h>
 
-#define LENLINE 1000 //define limit lenght of each one line
+#define LENLINE 500 //define limit lenght of each one line 
 
 //global variable assignment
 struct node {
