@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ncurse.h>
+#include <ncurses.h>
 
 #define LENLINE 1000
 
@@ -12,9 +12,9 @@ struct node {
 	struct node *next; //next and previous address node linked
 };
 
-int draw_new(char *name, int socket,struct node *root); // addcontact prototype
-int pop_contact(char *name, struct node *root); // pop prototype
-int read(struct node *root); // read prototype
+struct node* add_line(char *string, struct node *current);
+int draw_new(char *string, struct node *current);
+int draw_old_line(struct node *current);
 
 int main(){
 
@@ -29,7 +29,7 @@ int main(){
 
 }
 
-int add_line(char *string, struct node *current) {
+struct node* add_line(char *string, struct node *current) {
 
 	// create new node
 	current->next = malloc(sizeof(struct node));
