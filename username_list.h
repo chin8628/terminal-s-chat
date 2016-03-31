@@ -6,7 +6,7 @@
 struct node {
 	char username[20];
 	int socket;
-	struct node *next; //next and previous address node linked
+	struct node *next; //next address node linked
 };
 
 
@@ -17,12 +17,34 @@ int find_contact(char *name, struct node *root); // find prototype
 int contact_amount(struct node *root);
 
 int main(){
-
-	//Initial username's linked list
+	int i,socket;
+	char name[20], *a_name;
 	struct node *root, *current;
+
 	root = malloc(sizeof(struct node));
 	root->next = 0;
 	current = root;
+	for(i=0;i<5;i++){
+		scanf(" %[^\n]s", name);
+		scanf(" %d", &socket);
+		a_name = name;
+		add_contact(a_name, socket, root);
+
+	}
+	printf("Before pop contact\n");
+	read(root);
+	printf("Contact in server : %d\n",contact_amount(root));
+	printf("\n\nDisconect Contact : ");
+	scanf(" %[^\n]s", name);
+	pop_contact(name, root);
+	printf("\nAfter pop contact\n");
+	read(root);
+	printf("Contact in server : %d\n",contact_amount(root));
+
+	printf("\n----------- Test Find contact  -------------\n");
+	scanf(" %[^\n]s", name);
+	a_name = name;
+	printf("Username : %s\nSocket : %d", name, find_contact(name,root));
 }
 
 //------------------------------------------------------------------------------
@@ -79,6 +101,7 @@ int read(struct node *root){
 		printf("----------------------\n");
 	}
 }
+
 
 // --------------------------------------------------------------------------------
 
