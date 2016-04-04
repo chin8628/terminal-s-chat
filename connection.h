@@ -1,7 +1,11 @@
-int initial_connection(char *ip_addr, int port) {
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <string.h>
 
-    int socket_desc;
-    struct sockaddr_in server;
+int socket_desc;
+struct sockaddr_in server;
+
+int initial_connection(char *ip_addr, int port) {
 
     //Create socket
     socket_desc = socket(AF_INET , SOCK_STREAM , 0);
