@@ -1,3 +1,8 @@
+/*
+    This connection file is for client side only!!
+*/
+
+
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <string.h>

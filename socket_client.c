@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include "connection.h"
+#include "connection_clent.h"
 
 #define LENGHT_MESSAGE 255
 
