@@ -6,10 +6,11 @@
 #include <unistd.h>
 #include <pthread.h>
 #include "global_table.h"
-#include "command.h"
+
+//#include "command.h"
 
 #define LENGHT_USERNAME 255
-#define LENGHT_MSSG 2000;
+#define LENGHT_MESSAGE 255;
 
 /*
 // This function will handle connection for each client in each thread
@@ -20,7 +21,7 @@ void *connection_handler (void *socket_desc) {
     int sock = *(int *)socket_desc;
     int receiver_sock, read_size;
     int i, j;
-    char *message, client_message[LENGHT_MSSG], username[LENGHT_USERNAME], another[LENGHT_USERNAME];
+    char *message, client_message[LENGHT_MESSAGE], username[LENGHT_USERNAME], another[LENGHT_USERNAME];
 
     //Receive username and add address of sock's var into Global Table Socket
     do {
@@ -28,18 +29,28 @@ void *connection_handler (void *socket_desc) {
     } while (read_size <= 0);
     add_user(&sock, username);
 
+    do {
+        read_size = recv(sock, receiver_sock, LENGHT_USERNAME, 0);
+    } while (read_size <= 0);
+    receiver_sock -= 48;
+
     //Receive a mssg from client
-    while ( (read_size = recv(sock, client_message, LENGHT_MSSG, 0)) > 0 ) {
+    while ( (read_size = recv(sock, client_message, LENGHT_MESSAGE, 0)) > 0 ) {
+
         //Check if get command from user
         if (client_message[0] == '/') {
+
             //Todo: send command from user to command's library
             //call_command(client_message);
+
         }
         else {
+
             //Echo mssg to client destination
             client_message[read_size] = '\0';
-            printf("Recv from %d - %s - to send %d\n", sock, client_message, receiver_sock);
+            printf("Recv from %d to send %d\n", sock, client_message, receiver_sock);
             write(receiver_sock, client_message, read_size);
+
         }
     }
 
