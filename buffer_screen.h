@@ -14,9 +14,18 @@ struct node {
 struct node *current, *screen, *root;
 int line_amount = 0, bottom_line = 0;
 
-int add_line(char *string);
-int draw_new(char *string);
-int draw_old_line(int height_screen, int option);
+void add_line(char *string);
+void draw_new(WINDOW *display, char *string);
+void draw_old_line(WINDOW *display, int height_screen, int option);
+
+void initial_buffer_screen() {
+
+	//Initial username's linked list
+	root = malloc(sizeof(struct node));
+	root->next = 0;
+	current = root;
+
+}
 
 int example_test(){
 
@@ -42,7 +51,7 @@ int example_test(){
 	//Print testing message
 	for (i=1;i<=50;i++) {
 		sprintf(buffer, "Testing scroll on number: %d", i);
-		draw_new(buffer);
+		draw_new(stdscr, buffer);
 	}
 	refresh();
 
@@ -50,9 +59,9 @@ int example_test(){
 	while ((ch = getch()) && ch != 'q')
 	{
 		if (ch == KEY_UP)
-			draw_old_line(parent_y, 1);
+			draw_old_line(stdscr, parent_y, 1);
 		else if (ch == KEY_DOWN )
-			draw_old_line(parent_y, 2);
+			draw_old_line(stdscr, parent_y, 2);
 	}
 
 	refresh();
@@ -62,7 +71,7 @@ int example_test(){
 
 }
 
-int add_line(char *string) {
+void add_line(char *string){
 
 	//move pointer to last node
 	while(current->next != 0) current = current->next;
@@ -78,11 +87,9 @@ int add_line(char *string) {
 	//Assign line_number to node buffer
 	current->line_number = line_amount;
 
-	return 0;
-
 }
 
-int draw_new(WINDOW *screen, char *string){
+void draw_new(WINDOW *display, char *string){
 
 	//Add new line into node-linked list
 	add_line(string);
@@ -93,14 +100,12 @@ int draw_new(WINDOW *screen, char *string){
 	bottom_line = line_amount;
 
 	//Print string on screen and refresh screen
-	wprintw(screen, "%s\n", string);
-	wrefresh(screen);
-
-	return 0;
+	wprintw(display, "%s\n", string);
+	wrefresh(display);
 
 }
 
-int draw_old_line(WINDOW *screen, int height_screen, int option){
+void draw_old_line(WINDOW *display, int height_screen, int option){
 
 	/*
 		This function is for print line that is not display on screen
@@ -137,7 +142,7 @@ int draw_old_line(WINDOW *screen, int height_screen, int option){
 
 		scrl(-1);
 		move(0, 0);
-		wprintw(screen, current->string);
+		wprintw(display, current->string);
 		bottom_line--;
 
 	}
@@ -145,12 +150,11 @@ int draw_old_line(WINDOW *screen, int height_screen, int option){
 
 		scrl(1);
 		move(height_screen - 1, 0);
-		wprintw(screen, current->string);
+		wprintw(display, current->string);
 		bottom_line++;
 
 	}
 
-	wrefresh(screen);
-	return 0;
+	wrefresh(display);
 
 }
