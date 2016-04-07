@@ -100,7 +100,7 @@ int draw_new(WINDOW *screen, char *string){
 
 }
 
-int draw_old_line(int height_screen, int option){
+int draw_old_line(WINDOW *screen, int height_screen, int option){
 
 	/*
 		This function is for print line that is not display on screen
@@ -137,7 +137,7 @@ int draw_old_line(int height_screen, int option){
 
 		scrl(-1);
 		move(0, 0);
-		printw(current->string);
+		wprintw(screen, current->string);
 		bottom_line--;
 
 	}
@@ -145,12 +145,12 @@ int draw_old_line(int height_screen, int option){
 
 		scrl(1);
 		move(height_screen - 1, 0);
-		printw(current->string);
+		wprintw(screen, current->string);
 		bottom_line++;
 
 	}
 
-	refresh();
+	wrefresh(screen);
 	return 0;
 
 }
