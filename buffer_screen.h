@@ -3,7 +3,7 @@
 #include <string.h>
 #include <ncurses.h>
 
-#define LENLINE 500 //define limit lenght of each one line 
+#define LENLINE 500 //define limit lenght of each one line
 
 //global variable assignment
 struct node {
@@ -82,7 +82,7 @@ int add_line(char *string) {
 
 }
 
-int draw_new(char *string){
+int draw_new(WINDOW *screen, char *string){
 
 	//Add new line into node-linked list
 	add_line(string);
@@ -93,8 +93,8 @@ int draw_new(char *string){
 	bottom_line = line_amount;
 
 	//Print string on screen and refresh screen
-	printw("%s\n", string);
-	refresh();
+	wprintw(screen, "%s\n", string);
+	wrefresh(screen);
 
 	return 0;
 
