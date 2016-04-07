@@ -10,7 +10,7 @@
 //#include "command.h"
 
 #define LENGHT_USERNAME 255
-#define LENGHT_MESSAGE 255;
+#define LENGHT_MESSAGE 255
 
 /*
 // This function will handle connection for each client in each thread
@@ -48,7 +48,7 @@ void *connection_handler (void *socket_desc) {
 
             //Echo mssg to client destination
             client_message[read_size] = '\0';
-            printf("Recv from %d to send %d\n", sock, client_message, receiver_sock);
+            printf("Recv from %d to send %d\n", sock, receiver_sock);
             write(receiver_sock, client_message, read_size);
 
         }
