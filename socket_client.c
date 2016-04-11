@@ -3,22 +3,27 @@
 #include <string.h>
 #include <ncurses.h>
 #include <pthread.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <unistd.h>
 
-#include "global_table.h"
 #include "connection_clent.h"
 #include "buffer_screen.h"
-#include "username_list.h"
 
 #define LENGHT_MESSAGE 255
 
-void *display(WINDOW *screen) {
+void *display(WINDOW *typing, WINDOWS *display) {
+
+    char message_buffer[LENGHT_MESSAGE];
+    wscanw(typing, " %[^\n]s", message_buffer);
+    if(send_data(message_buffer))
+        draw_new(display, "system>> Send failed");
+    werase(typing);
 
 }
 
-void *typing(WINDOW *screen) {
+void *typing(WINDOW *display_user_list) {
+
+    char message_buffer[LENGHT_MESSAGE];
+    recieve_data(LENGHT_MESSAGE, message_buffer);
+    draw_new(display, message_buffer);
 
 }
 
@@ -62,36 +67,29 @@ int main(int argc , char *argv[]) {
 
     initial_buffer_screen();
 
-    char input[255];
-    draw_new(display, "Hello");
-    wscanw(typing, "%s", input);
-
     /////////////////////////////////////////////////
     //               END NCURSES CODE              //
     /////////////////////////////////////////////////
 
+    draw_new(display, "--------------------------------------------------");
+    draw_new(display, "             Welcome to terminal chat!            ");
+    draw_new(display, "--------------------------------------------------\n");
+
+    draw_new(display, "system>> Terminal-chat is started.");
 
     //Initial connection server - client
     initial_connection("127.0.0.1", 8888);
 
     recieve_data(LENGHT_MESSAGE, message_buffer);
-    puts(message_buffer);
+    draw_new(display, message_buffer);
 
-    draw_new(display, "\n-------------------------------");
-    draw_new(display, "   Welcome to terminal chat!");
-    draw_new(display, "-------------------------------\n");
-
-    draw_new(display, "Please enter Nickname.");
+    draw_new(display, "system>> Please enter Nickname.");
     wscanw(typing, " %[^\n]s", message_buffer);
     werase(typing);
-    if(send_data(message_buffer))
-        draw_new(display, "Send failed");
-
-    draw_new(display, "Chat with: ");
-    wscanw(typing, " %[^\n]s", message_buffer);
-    werase(typing);
-    if(send_data(message_buffer))
-        draw_new(display, "Send failed");
+    if(send_data(message_buffer) != 0)
+        draw_new(display, "system>> Send failed");
+    recieve_data(LENGHT_MESSAGE, message_buffer);
+    draw_new(display, message_buffer);
 
     //Send some data
     do {
@@ -103,8 +101,7 @@ int main(int argc , char *argv[]) {
         //Send
         wscanw(typing, " %[^\n]s", message_buffer);
         if(send_data(message_buffer))
-            draw_new(display, "Send failed");
-
+            draw_new(display, "system>> Send failed");
         werase(typing);
 
         //Receive a reply from the server
