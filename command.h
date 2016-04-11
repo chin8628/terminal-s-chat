@@ -1,4 +1,4 @@
-#include <header.h>
+#include "header.h"
 
 struct node *root;
 
@@ -27,6 +27,8 @@ int read_user(struct node *root){
     read(root);
     return 0;
 }
+
+int talkto()
 
 /* check_name function below is for checking condition before adding user,
    such as less than 20 characters, and doesn't duplicate with existing user. */
