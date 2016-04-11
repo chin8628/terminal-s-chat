@@ -3,9 +3,7 @@
 */
 
 
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <string.h>
+#include <header.h>
 
 int socket_desc;
 struct sockaddr_in server;

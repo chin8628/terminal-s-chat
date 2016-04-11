@@ -1,7 +1,6 @@
 // demo.c
 
-#include <ncurses.h>
-#include <unistd.h>
+#include <header.h>
 
 void draw_borders(WINDOW *screen) {
     int x, y, i; getmaxyx(screen, y, x);

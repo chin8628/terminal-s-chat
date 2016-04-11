@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <pthread.h>
 #include "global_table.h"
+#include <header.h>
 
 //#include "command.h"
 

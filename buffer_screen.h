@@ -1,7 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ncurses.h>
+#include <header.h>
 
 #define LENLINE 500 //define limit lenght of each one line
 
