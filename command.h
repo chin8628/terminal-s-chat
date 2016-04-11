@@ -1,40 +1,21 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include "username_list.h"
-#include <string.h>
-
-struct node *root;
-
-int read_user(struct node *root); // read all user.
-int add_user(char *name, struct node *root); // add a user.
+int read_user(); // read all user.
+int add_user(char *name, int socket); // add a user.
 int list_help(); // list all command
 int lib_tester(char const *input); // testing purpose.
-
-/*  Main fuction below is commented out for testing purpose. */
-
-// int main(int argc, char const *argv[]) {
-//     if(argc == 2){
-//         lib_tester(argv[1]);
-//     }
-//     else{
-//         printf("Please enter 1 argument as a command.\n");
-//         list_help();
-//     }
-//     return 0;
-// }
+int check_name(char *name);
 
 /* read_user function below is for listing all user in room.
    using read function in username_list.h */
 
-int read_user(struct node *root){
-    read(root);
+int read_user(){
+    display_user_list();
     return 0;
 }
 
 /* check_name function below is for checking condition before adding user,
    such as less than 20 characters, and doesn't duplicate with existing user. */
 
-int check_name(char *name, struct node *root){
+int check_name(char *name){
     int passable_name=1, duplicate=0, i=0;
     while(passable_name != 0){                                              // Loop check name.
         if(strlen(name) >= 20){                                             // Check if name has more than 20 chars.
@@ -44,7 +25,7 @@ int check_name(char *name, struct node *root){
         }
         else {
             for(i=0; i<contact_amount(root); i++){
-                if(strcmp(name, find_contact_by_socket(i, root)) == 0){     // Check if name is duplicated.
+                if(strcmp(name, find_contact_by_socket(i)) == 0){     // Check if name is duplicated.
                     printf("Name error.\n");
                     printf("Enter username: ");
                     scanf(" %[^\n]s", name);
@@ -66,10 +47,10 @@ int check_name(char *name, struct node *root){
    Using check_name in command.h and add_contact with read in username_list.h
 */
 
-int add_user(char *name, struct node *root){
-    check_name(name, root);
-    add_contact(name, contact_amount(root), root);
-    read(root);
+int add_user(char *name, int socket){
+    check_name(name);
+    add_contact(name, socket);
+    display_user_list();
     return 0;
 }
 
@@ -96,7 +77,7 @@ int lib_tester(char const *input) {
         char name[255];
         printf("Please enter a name: ");
         scanf("%s", name);
-        add_user(name, root);
+        add_user(name, 1);
     }
     else {
         list_help();

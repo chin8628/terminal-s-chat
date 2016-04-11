@@ -1,55 +1,29 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 //global variable assignment
 struct node {
 	char username[20];
 	int socket;
 	struct node *next; //next address node linked
 };
+struct node *root;
 
 
-int add_contact(char *name, int socket,struct node *root); // addcontact prototype
-int pop_contact(char *name, struct node *root); // pop prototype
-int read(struct node *root); // read prototype
-int find_contact(char *name, struct node *root); // find prototype
-int contact_amount(struct node *root);
+int add_contact(char *name, int socket); // addcontact prototype
+int pop_contact(char *name); // pop prototype
+int display_user_list(); // read prototype
+int find_contact(char *name); // find prototype
+int contact_amount();
+struct node* initial_username_listed();
 
-// int main(){
-// 	int i,socket;
-// 	char name[20], *a_name;
-// 	struct node *root, *current;
-//
-// 	root = malloc(sizeof(struct node));
-// 	root->next = 0;
-// 	current = root;
-// 	for(i=0;i<5;i++){
-// 		scanf(" %[^\n]s", name);
-// 		scanf(" %d", &socket);
-// 		a_name = name;
-// 		add_contact(a_name, socket, root);
-//
-// 	}
-// 	printf("Before pop contact\n");
-// 	read(root);
-// 	printf("Contact in server : %d\n",contact_amount(root));
-// 	printf("\n\nDisconect Contact : ");
-// 	scanf(" %[^\n]s", name);
-// 	pop_contact(name, root);
-// 	printf("\nAfter pop contact\n");
-// 	read(root);
-// 	printf("Contact in server : %d\n",contact_amount(root));
-//
-// 	printf("\n----------- Test Find contact  -------------\n");
-// 	scanf(" %[^\n]s", name);
-// 	a_name = name;
-// 	printf("Username : %s\nSocket : %d", name, find_contact(name,root));
-// }
+struct node* initial_username_listed(){
 
-//------------------------------------------------------------------------------
+	//Initial username's linked list
+	root = malloc(sizeof(struct node));
+	root->next = 0;
+	return root;
 
-int add_contact(char *name, int socket, struct node *root){
+}
+
+int add_contact(char *name, int socket){
 
 	int i=0, contact_amount=0;
 	struct node *current;
@@ -71,9 +45,7 @@ int add_contact(char *name, int socket, struct node *root){
 
 }
 
-//-------------------------------------------------------------------------------
-
-int pop_contact(char *name,struct node *root){
+int pop_contact(char *name){
 	struct node *current, *temp;
 	current = root;
 
@@ -88,10 +60,7 @@ int pop_contact(char *name,struct node *root){
 	}
 }
 
-//---------------------------------------------------------------------------------
-
-
-int read(struct node *root){
+int display_user_list(){
 	struct node *current;
 	current = root;
 	printf("----------- User List -----------\n");
@@ -102,9 +71,7 @@ int read(struct node *root){
 	printf("---------------------------------\n");
 }
 
-// --------------------------------------------------------------------------------
-
-int find_contact_by_user(char *name,struct node *root){
+int find_contact_by_user(char *name){
 	struct node *current;
 	current = root;
 	while(current->next != 0){
@@ -116,7 +83,7 @@ int find_contact_by_user(char *name,struct node *root){
 	return -1;
 }
 
-const char * find_contact_by_socket(int socket,struct node *root){
+const char * find_contact_by_socket(int socket){
 	struct node *current;
 	current = root;
 	while(current->next != 0){
