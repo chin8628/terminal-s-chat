@@ -9,19 +9,26 @@
 
 #define LENGHT_MESSAGE 255
 
-void *display(WINDOW *typing, WINDOWS *display) {
+void *display(WINDOW *array) {
+
+    //array[0] = display
+    //array[1] = typing
 
     char message_buffer[LENGHT_MESSAGE];
-    wscanw(typing, " %[^\n]s", message_buffer);
-    if(send_data(message_buffer))
-        draw_new(display, "system>> Send failed");
-    werase(typing);
+    wscanw(array[1], " %[^\n]s", message_buffer);
+    if(send_data(message_buffer) == 0)
+        draw_new(array[0], "system>> Send failed");
+    werase(array[1]);
 
 }
 
 void *typing(WINDOW *display_user_list) {
 
     char message_buffer[LENGHT_MESSAGE];
+
+    //Reset value in message_buffer for check while loop's condition
+    strcpy(message_buffer, "");
+
     recieve_data(LENGHT_MESSAGE, message_buffer);
     draw_new(display, message_buffer);
 
@@ -31,6 +38,7 @@ int main(int argc , char *argv[]) {
 
     int read_size;
     char message_buffer[LENGHT_MESSAGE], c;
+    WINDOW *buffer_window[2];
 
 
     /////////////////////////////////////////////////
@@ -90,25 +98,9 @@ int main(int argc , char *argv[]) {
         draw_new(display, "system>> Send failed");
     recieve_data(LENGHT_MESSAGE, message_buffer);
     draw_new(display, message_buffer);
+    werase(typing);
 
-    //Send some data
-    do {
-        werase(typing);
-
-        //Reset value in message_buffer for check while loop's condition
-        strcpy(message_buffer, "");
-
-        //Send
-        wscanw(typing, " %[^\n]s", message_buffer);
-        if(send_data(message_buffer))
-            draw_new(display, "system>> Send failed");
-        werase(typing);
-
-        //Receive a reply from the server
-        recieve_data(LENGHT_MESSAGE, message_buffer);
-        draw_new(display, message_buffer);
-
-    } while(strcmp(message_buffer, ":q!") != 0);
+    //prepare to pthread_create with WINDOW *buffer_window[2];
 
     draw_new(display, "\n------------------------------");
     draw_new(display, "Good bye, see you again! owo)/\n");
