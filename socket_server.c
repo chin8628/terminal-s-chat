@@ -5,9 +5,9 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <pthread.h>
-#include "global_table.h"
 
-//#include "command.h"
+#include "username_list.h"
+#include "command.h"
 
 #define LENGHT_USERNAME 255
 #define LENGHT_MESSAGE 255
