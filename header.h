@@ -11,9 +11,3 @@
 #include "connection_clent.h"
 #include "buffer_screen.h"
 #include "username_list.h"
-
-int main()
-{
-
-	return 0;
-}
