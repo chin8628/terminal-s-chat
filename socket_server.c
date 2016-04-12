@@ -27,7 +27,7 @@ void *connection_handler (void *socket_desc) {
     char buffer_reciever[10];
 
     //Reply to the client
-    strcpy(message, "server>> Hello Client , We was already connected together!\n");
+    strcpy(message, "server>> Hello Client , We was already connected together!");
     write(sock ,message ,strlen(message));
 
     //Receive username and add address of sock's var into Global Table Socket
@@ -35,7 +35,7 @@ void *connection_handler (void *socket_desc) {
         read_size = recv(sock, username, LENGHT_USERNAME, 0);
     } while (read_size <= 0);
     add_user(username, sock);
-    sprintf(message, "server>> Your nickname is %s.\n", username);
+    sprintf(message, "server>> Your nickname is %s.", username);
     write(sock, message, strlen(message));
 
     //Receive a mssg from client
@@ -46,7 +46,7 @@ void *connection_handler (void *socket_desc) {
 
             if (strcmp(client_message, "/talkto") == 0) {
                 do{
-                    strcpy(message, "server>> Enter nickname who want to chat with.\n");
+                    strcpy(message, "server>> Enter nickname who want to chat with.");
                     write(sock, message, strlen(message));
                     read_size = recv(sock, buffer_reciever, LENGHT_USERNAME, 0);
                 }while(read_size <= 0);
@@ -63,7 +63,7 @@ void *connection_handler (void *socket_desc) {
 
             if (receiver_sock == -1) {
 
-                strcpy(message, "server>> Please enter nickname who you want to chat.\n");
+                strcpy(message, "server>> Please \\talkto for enter nickname who you want to chat.");
                 write(sock, message, strlen(message));
 
             }
