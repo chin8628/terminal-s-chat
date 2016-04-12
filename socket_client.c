@@ -14,29 +14,41 @@
 
 WINDOW *global_typing;
 WINDOW *global_display;
+int state = 0;
 
-void *display();
-void *typing();
-
-void* display_func(void) {
-
-    char message_buffer[LENGHT_MESSAGE];
-    wscanw(global_typing, " %[^\n]s", message_buffer);
-    if(send_data(message_buffer) == 0)
-        draw_new(global_display, "system>> Send failed");
-    werase(global_typing);
-
-}
+void *display_func();
+void *typing_func();
 
 void* typing_func(void) {
 
     char message_buffer[LENGHT_MESSAGE];
 
-    //Reset value in message_buffer for check while loop's condition
-    strcpy(message_buffer, "");
+    while (state == 0) {
 
-    recieve_data(LENGHT_MESSAGE, message_buffer);
-    draw_new(global_display, message_buffer);
+        wscanw(global_typing, " %[^\n]s", message_buffer);
+        if (strcpy(message_buffer, ":q!") == 0) state = 1;
+        if(send_data(message_buffer) == 0)
+            draw_new(global_display, "system>> Send failed");
+        werase(global_typing);
+
+    }
+
+}
+
+void* display_func(void) {
+
+    char message_buffer[LENGHT_MESSAGE];
+
+    while (state == 0) {
+
+        //Reset value in message_buffer for check while loop's condition
+        strcpy(message_buffer, "");
+
+        recieve_data(LENGHT_MESSAGE, message_buffer);
+        draw_new(global_display, message_buffer);
+        wmove(global_typing, 0, 0);
+
+    }
 
 }
 
@@ -103,7 +115,7 @@ int main(int argc , char *argv[]) {
     draw_new(display, "system>> Please enter Nickname.");
     wscanw(typing, " %[^\n]s", message_buffer);
     werase(typing);
-    if(send_data(message_buffer) != 0)
+    if(send_data(message_buffer) == 0)
         draw_new(display, "system>> Send failed");
     recieve_data(LENGHT_MESSAGE, message_buffer);
     draw_new(display, message_buffer);
@@ -113,6 +125,10 @@ int main(int argc , char *argv[]) {
     pthread_t typing_thread, display_thread;
     pthread_create( &typing_thread, NULL, (void *)typing_func, NULL);
     pthread_create( &display_thread, NULL, (void *)display_func, NULL );
+
+    while (state == 0) {
+        //do nothing
+    }
 
     pthread_join(typing_thread, NULL);
     pthread_join(display_thread, NULL);
