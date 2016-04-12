@@ -19,16 +19,12 @@ int check_name(char *name){
     int passable_name=1, duplicate=0, i=0;
     while(passable_name != 0){                                              // Loop check name.
         if(strlen(name) >= 20){                                             // Check if name has more than 20 chars.
-            printf("Please enter lesser than 20 characters.\n");
-            printf("Enter username: ");
-            scanf(" %[^\n]s", name);
+            return 101;
         }
         else {
-            for(i=0; i<contact_amount(root); i++){
-                if(strcmp(name, find_contact_by_socket(i)) == 0){     // Check if name is duplicated.
-                    printf("Name error.\n");
-                    printf("Enter username: ");
-                    scanf(" %[^\n]s", name);
+            for(i=0; i<contact_amount(); i++){
+                if(find_contact_by_user(name) == -1){     // Check if name is duplicated.
+                    return 102;
                     duplicate = 1;
                     break;
                 }
@@ -41,6 +37,7 @@ int check_name(char *name){
             }
         }
     }
+    return 0;
 }
 
 /* add_user function below is for... adding user to the room. Yeah.
@@ -48,7 +45,8 @@ int check_name(char *name){
 */
 
 int add_user(char *name, int socket){
-    check_name(name);
+    int error = check_name(name);
+    if (error != 0) return error; 
     add_contact(name, socket);
     display_user_list();
     return 0;

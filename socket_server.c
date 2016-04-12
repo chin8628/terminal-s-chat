@@ -22,7 +22,7 @@ void *connection_handler (void *socket_desc) {
 
     int sock = *(int *)socket_desc;
     int receiver_sock = -1, read_size, count_connection = 0;
-    int i, j;
+    int i, j, error;
     char message[LENGHT_MESSAGE], client_message[LENGHT_MESSAGE], username[LENGHT_USERNAME], another[LENGHT_USERNAME];
     char buffer_reciever[10];
 
@@ -34,8 +34,16 @@ void *connection_handler (void *socket_desc) {
     do {
         read_size = recv(sock, username, LENGHT_USERNAME, 0);
     } while (read_size <= 0);
-    add_user(username, sock);
-    sprintf(message, "server>> Your nickname is %s.", username);
+    error = add_user(username, sock);
+    if (error == 101) {
+        sprintf(message, "server>> Nickname must lesser than 20 characters.");
+    }
+    else if (error == 102) {
+        sprintf(message, "server>> Name error.");
+    }
+    else {
+        sprintf(message, "server>> Your nickname is %s.", username);
+    }
     write(sock, message, strlen(message));
 
     //Receive a mssg from client
@@ -45,6 +53,7 @@ void *connection_handler (void *socket_desc) {
         if (client_message[0] == '/') {
 
             if (strcmp(client_message, "/talkto") == 0) {
+
                 do{
                     strcpy(message, "server>> Enter nickname who want to chat with.");
                     write(sock, message, strlen(message));

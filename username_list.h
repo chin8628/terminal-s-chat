@@ -94,10 +94,10 @@ const char * find_contact_by_socket(int socket){
 		}
 		current = current->next;
 	}
-	return 0;
+	return "0";
 }
 
-int contact_amount(struct node *root){
+int contact_amount(){
 	struct node *current;
 	int amount=0;
 	current = root;
