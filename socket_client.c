@@ -3,26 +3,32 @@
 #include <string.h>
 #include <ncurses.h>
 #include <pthread.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <unistd.h>
 
 #include "connection_clent.h"
 #include "buffer_screen.h"
 
 #define LENGHT_MESSAGE 255
 
-void *display(WINDOW *array) {
+WINDOW *global_typing;
+WINDOW *global_display;
 
-    //array[0] = display
-    //array[1] = typing
+void *display();
+void *typing();
+
+void* display_thread(void) {
 
     char message_buffer[LENGHT_MESSAGE];
-    wscanw(array[1], " %[^\n]s", message_buffer);
+    wscanw(global_typing, " %[^\n]s", message_buffer);
     if(send_data(message_buffer) == 0)
-        draw_new(array[0], "system>> Send failed");
-    werase(array[1]);
+        draw_new(global_display, "system>> Send failed");
+    werase(global_typing);
 
 }
 
-void *typing(WINDOW *display_user_list) {
+void* typing_thread(void) {
 
     char message_buffer[LENGHT_MESSAGE];
 
@@ -30,7 +36,7 @@ void *typing(WINDOW *display_user_list) {
     strcpy(message_buffer, "");
 
     recieve_data(LENGHT_MESSAGE, message_buffer);
-    draw_new(display, message_buffer);
+    draw_new(global_display, message_buffer);
 
 }
 
@@ -61,6 +67,9 @@ int main(int argc , char *argv[]) {
     WINDOW *display = newwin(parent_y - typing_size - 1, parent_x, 0, 0);
     WINDOW *split_line = newwin(1, parent_x, parent_y - typing_size - 1, 0);
     WINDOW *typing = newwin(typing_size, parent_x, parent_y - typing_size, 0);
+
+    global_typing = typing;
+    global_display = display;
 
     scrollok(display, 1);
 
@@ -101,6 +110,9 @@ int main(int argc , char *argv[]) {
     werase(typing);
 
     //prepare to pthread_create with WINDOW *buffer_window[2];
+    pthread_t typing_thread, display_thread;
+    pthread_create( &typing_thread, NULL, (void *)typing_thread, NULL);
+    pthread_create( &display_thread, NULL, (void *)display_thread, NULL );
 
     draw_new(display, "\n------------------------------");
     draw_new(display, "Good bye, see you again! owo)/\n");
