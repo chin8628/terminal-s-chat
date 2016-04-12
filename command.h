@@ -12,8 +12,6 @@ int read_user(){
     return 0;
 }
 
-int talkto()
-
 /* check_name function below is for checking condition before adding user,
    such as less than 20 characters, and doesn't duplicate with existing user. */
 
