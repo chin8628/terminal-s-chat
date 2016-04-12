@@ -78,7 +78,9 @@ int find_contact_by_user(char *name){
 		if(strcmp(current->next->username, name) == 0){
 			return current->next->socket;
 		}
-		current = current->next;
+		else {
+			current = current->next;
+		}
 	}
 	return -1;
 }
