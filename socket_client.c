@@ -18,7 +18,7 @@ WINDOW *global_display;
 void *display();
 void *typing();
 
-void* display_thread(void) {
+void* display_func(void) {
 
     char message_buffer[LENGHT_MESSAGE];
     wscanw(global_typing, " %[^\n]s", message_buffer);
@@ -28,7 +28,7 @@ void* display_thread(void) {
 
 }
 
-void* typing_thread(void) {
+void* typing_func(void) {
 
     char message_buffer[LENGHT_MESSAGE];
 
@@ -111,8 +111,8 @@ int main(int argc , char *argv[]) {
 
     //prepare to pthread_create with WINDOW *buffer_window[2];
     pthread_t typing_thread, display_thread;
-    pthread_create( &typing_thread, NULL, (void *)typing_thread, NULL);
-    pthread_create( &display_thread, NULL, (void *)display_thread, NULL );
+    pthread_create( &typing_thread, NULL, (void *)typing_func, NULL);
+    pthread_create( &display_thread, NULL, (void *)display_func, NULL );
 
     draw_new(display, "\n------------------------------");
     draw_new(display, "Good bye, see you again! owo)/\n");
