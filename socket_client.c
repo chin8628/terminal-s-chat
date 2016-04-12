@@ -114,6 +114,9 @@ int main(int argc , char *argv[]) {
     pthread_create( &typing_thread, NULL, (void *)typing_func, NULL);
     pthread_create( &display_thread, NULL, (void *)display_func, NULL );
 
+    pthread_join(typing_thread, NULL);
+    pthread_join(display_thread, NULL);
+
     draw_new(display, "\n------------------------------");
     draw_new(display, "Good bye, see you again! owo)/\n");
 
