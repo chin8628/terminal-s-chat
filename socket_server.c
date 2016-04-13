@@ -31,20 +31,22 @@ void *connection_handler (void *socket_desc) {
     write(sock ,message ,strlen(message));
 
     //Receive username and add address of sock's var into Global Table Socket
-    do {
-        read_size = recv(sock, username, LENGHT_USERNAME, 0);
-    } while (read_size <= 0);
-    error = add_user(username, sock);
-    if (error == 101) {
-        sprintf(message, "server>> Nickname must lesser than 20 characters.");
-    }
-    else if (error == 102) {
-        sprintf(message, "server>> Name error.");
-    }
-    else {
-        sprintf(message, "server>> Your nickname is %s.", username);
-    }
-    write(sock, message, strlen(message));
+    do{
+        do {
+            read_size = recv(sock, username, LENGHT_USERNAME, 0);
+        } while (read_size <= 0);
+        error = add_user(username, sock);
+        if (error == 101) {
+            sprintf(message, "server>> Nickname must lesser than 20 characters.");
+        }
+        else if (error == 102) {
+            sprintf(message, "server>> Name error.");
+        }
+        else {
+            sprintf(message, "server>> Your nickname is %s.", username);
+        }
+        write(sock, message, strlen(message));
+    }while(error != 0);
 
     //Receive a mssg from client
     while ( (read_size = recv(sock, client_message, LENGHT_MESSAGE, 0)) > 0 ) {
@@ -72,7 +74,7 @@ void *connection_handler (void *socket_desc) {
 
             if (receiver_sock == -1) {
 
-                strcpy(message, "server>> Please \\talkto for enter nickname who you want to chat.");
+                strcpy(message, "server>> Please /talkto for enter nickname who you want to chat.");
                 write(sock, message, strlen(message));
 
             }
