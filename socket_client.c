@@ -22,13 +22,20 @@ void *typing_func();
 void* typing_func(void) {
 
     char message_buffer[LENGHT_MESSAGE];
+    char message_buffer_2[LENGHT_MESSAGE];
 
     while (state == 0) {
 
+        strcpy(message_buffer, "");
+        strcpy(message_buffer_2, "");
+
         wscanw(global_typing, " %[^\n]s", message_buffer);
-        if (strcpy(message_buffer, ":q!") == 0) state = 1;
+        if (strcmp(message_buffer, ":q!") == 0) state = 1;
         if(send_data(message_buffer) == 0)
             draw_new(global_display, "system>> Send failed");
+        strcpy(message_buffer_2, "you>> ");
+        strcat(message_buffer_2, message_buffer);
+        draw_new(global_display, message_buffer_2);
         werase(global_typing);
 
     }
