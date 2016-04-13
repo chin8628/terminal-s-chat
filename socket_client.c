@@ -112,6 +112,7 @@ int main(int argc , char *argv[]) {
     draw_new(display, "--------------------------------------------------\n");
 
     draw_new(display, "system>> Terminal-chat is started.");
+    draw_new(display, "system>> type \":q!\" to exit program.");
 
     //Initial connection server - client
     initial_connection("127.0.0.1", 8888);
