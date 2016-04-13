@@ -142,6 +142,7 @@ int main(int argc , char *argv[]) {
 
     draw_new(display, "\n------------------------------");
     draw_new(display, "Good bye, see you again! owo)/\n");
+    sleep(2);
 
     // clean up
     delwin(display);
