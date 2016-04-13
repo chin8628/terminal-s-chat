@@ -7,14 +7,15 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
-#include "connection_clent.h"
 #include "buffer_screen.h"
+#include "connection_clent.h"
+#include "chat_library.h"
 
 #define LENGHT_MESSAGE 255
 
 WINDOW *global_typing;
 WINDOW *global_display;
-int state = 0;
+int state = 0, display_height;
 
 void *display_func();
 void *typing_func();
@@ -23,6 +24,7 @@ void* typing_func(void) {
 
     char message_buffer[LENGHT_MESSAGE];
     char message_buffer_2[LENGHT_MESSAGE];
+    int buffer_int;
 
     while (state == 0) {
 
@@ -30,23 +32,35 @@ void* typing_func(void) {
         strcpy(message_buffer, "");
         strcpy(message_buffer_2, "");
 
+        // if (ch == KEY_UP || ch == KEY_DOWN) {
+        //     if (ch == KEY_UP){
+        //     	draw_old_line(global_display, global_parent_y, 1);
+        //     }
+        //     else if (ch == KEY_DOWN) {
+    	// 		draw_old_line(global_display, global_parent_y, 2);
+        //     }
+        // }
+
         wscanw(global_typing, " %[^\n]s", message_buffer);
 
         //Check exit command
         if (strcmp(message_buffer, ":q!") == 0) {
-
             //set state to stop all function
             state = 1;
             return 0;
-
         }
-
-        if(send_data(message_buffer) == 0)
-            draw_new(global_display, "system>> Send failed");
-
-        strcpy(message_buffer_2, "you>> ");
-        strcat(message_buffer_2, message_buffer);
-        draw_new(global_display, message_buffer_2);
+        else if (split_strcmp(0, 2, "/up", 0, 2, message_buffer)){
+            split_str(4, strlen(message_buffer), message_buffer, message_buffer_2);
+            buffer_int = atoi(message_buffer_2);
+            draw_old_line(global_display, 1, 1);
+        }
+        else {
+            strcpy(message_buffer_2, "you>> ");
+            strcat(message_buffer_2, message_buffer);
+            draw_new(global_display, message_buffer_2);
+            if(send_data(message_buffer) == 0)
+                draw_new(global_display, "system>> Send failed");
+        }
 
         werase(global_typing);
 
@@ -58,10 +72,12 @@ void* display_func(void) {
 
     char message_buffer[LENGHT_MESSAGE];
 
-    while (state == 0 && recieve_data(LENGHT_MESSAGE, message_buffer)) {
+    while (state == 0) {
+
+        if (recieve_data(LENGHT_MESSAGE, message_buffer) == 0)
+            draw_new(global_display, "system>> recieve error");
 
         draw_new(global_display, message_buffer);
-        wmove(global_typing, 0, 0);
 
         //Reset value in message_buffer for check while loop's condition
         strcpy(message_buffer, "");
@@ -98,6 +114,8 @@ int main(int argc , char *argv[]) {
     WINDOW *split_line = newwin(1, parent_x, parent_y - typing_size - 1, 0);
     WINDOW *typing = newwin(typing_size, parent_x, parent_y - typing_size, 0);
 
+    display_height = parent_y - typing_size - 1;
+
     global_typing = typing;
     global_display = display;
 
@@ -112,7 +130,7 @@ int main(int argc , char *argv[]) {
     //wbkgd(typing, COLOR_PAIR(2));
     //wrefresh(typing);
 
-    initial_buffer_screen();
+    initial_buffer_screen(display_height, typing_size);
 
     /////////////////////////////////////////////////
     //               END NCURSES CODE              //

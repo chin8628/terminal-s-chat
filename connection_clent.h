@@ -47,7 +47,6 @@ int recieve_data(int lenght, char *message_buffer){
         return 1;
     }
     else {
-        perror("Receive failed.");
         return 0;
     }
 

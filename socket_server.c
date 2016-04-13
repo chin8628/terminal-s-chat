@@ -94,6 +94,7 @@ void *connection_handler (void *socket_desc) {
                 printf("Recv from %d to send %d\n", sock, receiver_sock);
                 sprintf(buffer_message, "%s>> %s", username, client_message);
                 write(receiver_sock, buffer_message, strlen(buffer_message));
+                
             }
 
         }
