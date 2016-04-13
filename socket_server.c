@@ -110,6 +110,8 @@ void *connection_handler (void *socket_desc) {
         puts("Receive failed");
     }
 
+    pop_contact(username);
+
     //Free pointer of socket
     free(socket_desc);
 
