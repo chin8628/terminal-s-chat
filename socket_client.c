@@ -119,15 +119,6 @@ int main(int argc , char *argv[]) {
     recieve_data(LENGHT_MESSAGE, message_buffer);
     draw_new(display, message_buffer);
 
-    draw_new(display, "system>> Please enter Nickname.");
-    wscanw(typing, " %[^\n]s", message_buffer);
-    werase(typing);
-    if(send_data(message_buffer) == 0)
-        draw_new(display, "system>> Send failed");
-    recieve_data(LENGHT_MESSAGE, message_buffer);
-    draw_new(display, message_buffer);
-    werase(typing);
-
     //prepare to pthread_create with WINDOW *buffer_window[2];
     pthread_t typing_thread, display_thread;
     pthread_create( &typing_thread, NULL, (void *)typing_func, NULL);
