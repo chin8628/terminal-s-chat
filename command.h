@@ -23,7 +23,7 @@ int check_name(char *name){
         }
         else {
             for(i=0; i<contact_amount(); i++){
-                if(find_contact_by_user(name) == -1){     // Check if name is duplicated.
+                if(find_contact_by_user(name) != -1){     // Check if name is duplicated.
                     return 102;
                     duplicate = 1;
                     break;
@@ -46,7 +46,7 @@ int check_name(char *name){
 
 int add_user(char *name, int socket){
     int error = check_name(name);
-    if (error != 0) return error; 
+    if (error != 0) return error;
     add_contact(name, socket);
     display_user_list();
     return 0;
