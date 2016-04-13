@@ -23,7 +23,9 @@ void *connection_handler (void *socket_desc) {
     int sock = *(int *)socket_desc;
     int receiver_sock = -1, read_size, count_connection = 0;
     int i, j, error;
-    char message[LENGHT_MESSAGE], client_message[LENGHT_MESSAGE], username[LENGHT_USERNAME], another[LENGHT_USERNAME];
+    char message[LENGHT_MESSAGE], client_message[LENGHT_MESSAGE];
+    char buffer_message[LENGHT_MESSAGE];
+    char username[LENGHT_USERNAME], another[LENGHT_USERNAME], nickname_reciever[LENGHT_USERNAME];
     char buffer_reciever[10];
 
     //Reply to the client
@@ -62,10 +64,17 @@ void *connection_handler (void *socket_desc) {
                     read_size = recv(sock, buffer_reciever, LENGHT_USERNAME, 0);
                 }while(read_size <= 0);
 
-                sprintf(message, "Initial chat room with %s", buffer_reciever);
-                write(sock, message, strlen(message));
+                i = find_contact_by_user(buffer_reciever);
+                if (i == -1) {
+                    strcpy(message, "system>> This nickname isn't exist.");
+                }
+                else {
+                    receiver_sock = i;
+                    sprintf(message, "Initial chat room with %s - %d", buffer_reciever, receiver_sock);
+                    strcpy(nickname_reciever, buffer_reciever);
+                }
 
-                receiver_sock = atoi(buffer_reciever);
+                write(sock, message, strlen(message));
 
             }
 
@@ -83,7 +92,9 @@ void *connection_handler (void *socket_desc) {
                 //Echo mssg to client destination
                 client_message[read_size] = '\0';
                 printf("Recv from %d to send %d\n", sock, receiver_sock);
-                write(receiver_sock, client_message, read_size);
+                puts(nickname_reciever);
+                sprintf(buffer_message, "%s>> %s", nickname_reciever, client_message);
+                write(receiver_sock, buffer_message, strlen(buffer_message));
             }
 
         }
