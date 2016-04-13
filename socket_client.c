@@ -63,8 +63,8 @@ int main(int argc , char *argv[]) {
 
     int read_size;
     char message_buffer[LENGHT_MESSAGE], c;
+    char message_buffer_2[LENGHT_MESSAGE];
     WINDOW *buffer_window[2];
-
 
     /////////////////////////////////////////////////
     //             START NCURSES CODE              //
