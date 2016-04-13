@@ -16,6 +16,7 @@ int read_user(){
    such as less than 20 characters, and doesn't duplicate with existing user. */
 
 int check_name(char *name){
+    int i = strlen(name);
     if(strlen(name) > 20){                            // Check if name has more than 20 chars.
         return 101;
     }

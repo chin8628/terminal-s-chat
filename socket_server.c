@@ -12,7 +12,7 @@
 #include "command.h"
 
 #define LENGHT_USERNAME 255
-#define LENGHT_MESSAGE 255
+#define LENGHT_MESSAGE 256
 
 /*
 // This function will handle connection for each client in each thread
@@ -34,9 +34,10 @@ void *connection_handler (void *socket_desc) {
 
     //Receive username and add address of sock's var into Global Table Socket
     do{
-        do {
-            read_size = recv(sock, username, LENGHT_USERNAME, 0);
-        } while (read_size <= 0);
+
+        read_size = recv(sock, username, LENGHT_USERNAME, 0);
+        username[read_size] = '\0';
+
         error = add_user(username, sock);
         if (error == 101) {
             sprintf(message, "server>> Nickname must lesser than 20 characters.");
