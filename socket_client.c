@@ -26,16 +26,28 @@ void* typing_func(void) {
 
     while (state == 0) {
 
+        //Reset string for get new message
         strcpy(message_buffer, "");
         strcpy(message_buffer_2, "");
 
         wscanw(global_typing, " %[^\n]s", message_buffer);
-        if (strcmp(message_buffer, ":q!") == 0) state = 1;
+
+        //Check exit command
+        if (strcmp(message_buffer, ":q!") == 0) {
+
+            //set state to stop all function
+            state = 1;
+            return 0;
+
+        }
+
         if(send_data(message_buffer) == 0)
             draw_new(global_display, "system>> Send failed");
+
         strcpy(message_buffer_2, "you>> ");
         strcat(message_buffer_2, message_buffer);
         draw_new(global_display, message_buffer_2);
+
         werase(global_typing);
 
     }
@@ -46,14 +58,13 @@ void* display_func(void) {
 
     char message_buffer[LENGHT_MESSAGE];
 
-    while (state == 0) {
+    while (state == 0 && recieve_data(LENGHT_MESSAGE, message_buffer)) {
+
+        draw_new(global_display, message_buffer);
+        wmove(global_typing, 0, 0);
 
         //Reset value in message_buffer for check while loop's condition
         strcpy(message_buffer, "");
-
-        recieve_data(LENGHT_MESSAGE, message_buffer);
-        draw_new(global_display, message_buffer);
-        wmove(global_typing, 0, 0);
 
     }
 
@@ -128,9 +139,6 @@ int main(int argc , char *argv[]) {
     while (state == 0) {
         //do nothing
     }
-
-    pthread_join(typing_thread, NULL);
-    pthread_join(display_thread, NULL);
 
     draw_new(display, "\n------------------------------");
     draw_new(display, "Good bye, see you again! owo)/\n");
