@@ -52,7 +52,7 @@ void* typing_func(void) {
         else if (split_strcmp(0, 2, "/up", 0, 2, message_buffer)){
             split_str(4, strlen(message_buffer), message_buffer, message_buffer_2);
             buffer_int = atoi(message_buffer_2);
-            draw_old_line(global_display, 1, 1);
+            draw_old_line(global_display, 1, buffer_int);
         }
         else {
             strcpy(message_buffer_2, "you>> ");
