@@ -10,6 +10,7 @@
 
 #include "username_list.h"
 #include "command.h"
+#include "chat_library.h"
 
 #define LENGHT_USERNAME 255
 #define LENGHT_MESSAGE 256
@@ -25,11 +26,11 @@ void *connection_handler (void *socket_desc) {
     int i, j, error;
     char message[LENGHT_MESSAGE], client_message[LENGHT_MESSAGE];
     char buffer_message[LENGHT_MESSAGE];
-    char username[LENGHT_USERNAME], another[LENGHT_USERNAME], nickname_reciever[LENGHT_USERNAME];
-    char buffer_reciever[10];
+    char username[LENGHT_USERNAME], another[LENGHT_USERNAME];
 
     //Reply to the client
-    strcpy(message, "server>> Hello Client , We was already connected together!");
+    strcpy(message, "server>> Hello Client , We was already connected together!\n");
+    strcat(message, "server>> Let introduce yourself, What's your nickname?");
     write(sock ,message ,strlen(message));
 
     //Receive username and add address of sock's var into Global Table Socket
@@ -46,33 +47,32 @@ void *connection_handler (void *socket_desc) {
             sprintf(message, "server>> Name error.");
         }
         else {
-            sprintf(message, "server>> Your nickname is %s.", username);
+            sprintf(message, "server>> Your nickname is %s.\n", username);
+            strcat(message, "server>> OK, Let choose your friend to chat with.\n");
+            strcat(message, "server>> type \"/talkto [nickname]\" for choose contact.");
         }
         write(sock, message, strlen(message));
+
     }while(error != 0);
 
     //Receive a mssg from client
     while ( (read_size = recv(sock, client_message, LENGHT_MESSAGE, 0)) > 0 ) {
 
+        client_message[read_size] = '\0';
+
         //Check if get command from user
         if (client_message[0] == '/') {
 
-            if (strcmp(client_message, "/talkto") == 0) {
+            if (split_strcmp(0, 6, client_message, 0, 6, "/talkto")) {
 
-                do{
-                    strcpy(message, "server>> Enter nickname who want to chat with.");
-                    write(sock, message, strlen(message));
-                    read_size = recv(sock, buffer_reciever, LENGHT_USERNAME, 0);
-                }while(read_size <= 0);
-
-                i = find_contact_by_user(buffer_reciever);
+                split_str(8, strlen(client_message), client_message, buffer_message);
+                i = find_contact_by_user(buffer_message);
                 if (i == -1) {
                     strcpy(message, "system>> This nickname isn't exist.");
                 }
                 else {
                     receiver_sock = i;
-                    sprintf(message, "Initial chat room with %s - %d", buffer_reciever, receiver_sock);
-                    strcpy(nickname_reciever, buffer_reciever);
+                    sprintf(message, "Initial chat room with %s - %d", buffer_message, receiver_sock);
                 }
 
                 write(sock, message, strlen(message));
@@ -91,10 +91,8 @@ void *connection_handler (void *socket_desc) {
             else {
 
                 //Echo mssg to client destination
-                client_message[read_size] = '\0';
                 printf("Recv from %d to send %d\n", sock, receiver_sock);
-                puts(nickname_reciever);
-                sprintf(buffer_message, "%s>> %s", nickname_reciever, client_message);
+                sprintf(buffer_message, "%s>> %s", username, client_message);
                 write(receiver_sock, buffer_message, strlen(buffer_message));
             }
 
@@ -170,12 +168,6 @@ int main (int argc, char *argv[]) {
         //Now join the thread , so that we dont terminate before the thread
         //pthread_join( sniffer_thread , NULL);
         puts("Handler assigned");
-    }
-
-    if (new_socket<0)
-    {
-        perror("accept failed");
-        return 1;
     }
 
     return 0;
