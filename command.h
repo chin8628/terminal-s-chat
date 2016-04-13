@@ -16,26 +16,11 @@ int read_user(){
    such as less than 20 characters, and doesn't duplicate with existing user. */
 
 int check_name(char *name){
-    int passable_name=1, duplicate=0, i=0;
-    while(passable_name != 0){                                              // Loop check name.
-        if(strlen(name) >= 20){                                             // Check if name has more than 20 chars.
-            return 101;
-        }
-        else {
-            for(i=0; i<contact_amount(); i++){
-                if(find_contact_by_user(name) != -1){     // Check if name is duplicated.
-                    return 102;
-                    duplicate = 1;
-                    break;
-                }
-                else{
-                    duplicate = 0;
-                }
-            }
-            if(duplicate != 1){                                             // Add user after all case are true.
-                passable_name = 0;
-            }
-        }
+    if(strlen(name) > 20){                            // Check if name has more than 20 chars.
+        return 101;
+    }
+    else if(find_contact_by_user(name) != -1){     // Check if name is duplicated.
+        return 102;
     }
     return 0;
 }
