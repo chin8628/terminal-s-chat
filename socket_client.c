@@ -149,10 +149,15 @@ void* display_func(void) {
 
 int main(int argc , char *argv[]) {
 
-    int read_size;
+    int read_size, port;
+    char ip_address[255];
     char message_buffer[LENGHT_MESSAGE], c;
     char message_buffer_2[LENGHT_MESSAGE];
     WINDOW *buffer_window[2];
+
+    //Config ip address and port
+    strcpy(ip_address, argv[1]);
+    port = atoi(argv[2]);
 
     /////////////////////////////////////////////////
     //             START NCURSES CODE              //
@@ -204,7 +209,7 @@ int main(int argc , char *argv[]) {
     draw_new(display, "system>> Terminal-chat is started.");
 
     //Initial connection server - client
-    initial_connection("127.0.0.1", 8888);
+    initial_connection(ip_address, port);
 
     //prepare to pthread_create with WINDOW *buffer_window[2];
     pthread_t typing_thread, display_thread;
