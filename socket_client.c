@@ -77,11 +77,17 @@ void* typing_func(void) {
             draw_old_line(global_display, 2, buffer_int);
         }
         else if (split_strcmp(0, 4, "/help", 0, 4, message_buffer)){
+            draw_new(global_display, "you>> /help");
             draw_new(global_display, "system>> ### THIS IS HELP! ###");
             draw_new(global_display, "system>> \":q!\" to exit program.");
             draw_new(global_display, "system>> \"/talkto [nickname]\" to choose contact.");
             draw_new(global_display, "system>> \"/untalk\" to remove contact that we are talking.");
             draw_new(global_display, "system>> \"/upload [file]\" to upload file to client that you are talking.");
+        }
+        else if (split_strcmp(0, 4, "/find", 0, 4, message_buffer)){
+            draw_new(global_display, "you>> /find");
+            split_str(6, strlen(message_buffer) - 1, message_buffer, message_buffer_2);
+            search(message_buffer_2, global_display);
         }
         else {
             //Draw_new line to display message
