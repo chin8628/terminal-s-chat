@@ -195,8 +195,10 @@ int main(int argc , char *argv[]) {
     draw_new(display, "--------------------------------------------------\n");
 
     draw_new(display, "system>> Terminal-chat is started.");
-    draw_new(display, "system>> type \":q!\" to exit program.");
-    draw_new(display, "system>> type \"/talkto [nickname]\" for choose contact.");
+    draw_new(display, "system>> \":q!\" to exit program.");
+    draw_new(display, "system>> \"/talkto [nickname]\" to choose contact.");
+    draw_new(display, "system>> \"/untalk\" to remove contact that we are talking.");
+    draw_new(display, "system>> \"/upload [file]\" to upload file to client that you are talking.");
 
     //Initial connection server - client
     initial_connection("127.0.0.1", 8888);
