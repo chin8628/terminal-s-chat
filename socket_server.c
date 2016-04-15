@@ -84,6 +84,24 @@ void *connection_handler (void *socket_desc) {
                 sprintf(message, "0server>> Untalk is successful.");
                 write(sock, message, strlen(message));
             }
+            else if (split_strcmp(0, 7, client_message, 0, 7, "/contact")) {
+                struct node *current;
+            	current = root;
+                sprintf(message, "0server>> ----------- User List -----------\n");
+                strcat(message, "server>> ");
+                i = 0;
+            	while(current->next != 0){
+            		current = current->next;
+            		strcat(message, current->username);
+                    strcat(message, " | ");
+                    if (i == 3) {
+                        strcat(message, "\n         ");
+                        i = -1;
+                    }
+                    i++;
+            	}
+                write(sock, message, strlen(message));
+            }
 
         }
         else {
