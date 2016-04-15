@@ -10,6 +10,7 @@
 #include "buffer_screen.h"
 #include "connection_clent.h"
 #include "chat_library.h"
+#include "global_search.h"
 
 #define LENGHT_USERNAME 255
 #define LENGHT_MESSAGE 255
