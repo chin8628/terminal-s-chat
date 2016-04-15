@@ -29,7 +29,7 @@ void *connection_handler (void *socket_desc) {
     char username[LENGHT_USERNAME], another[LENGHT_USERNAME];
 
     //Reply to the client
-    strcpy(message, "server>> Hello Client , We was already connected together!\n");
+    strcpy(message, "0server>> Hello Client , We was already connected together!\n");
     strcat(message, "server>> Let introduce yourself, What's your nickname?");
     write(sock ,message ,strlen(message));
 
@@ -41,17 +41,18 @@ void *connection_handler (void *socket_desc) {
 
         error = add_user(username, sock);
         if (error == 101) {
-            sprintf(message, "server>> Nickname must lesser than 20 characters.");
+            sprintf(message, "0server>> Nickname must lesser than 20 characters.");
         }
         else if (error == 102) {
-            sprintf(message, "server>> Name error.");
+            sprintf(message, "0server>> Name error.");
         }
         else {
-            sprintf(message, "server>> Your nickname is %s.\n", username);
+            sprintf(message, "0server>> Your nickname is %s.\n", username);
             strcat(message, "server>> OK, Let choose your friend to chat with.\n");
             strcat(message, "server>> type \"/talkto [nickname]\" for choose contact.");
         }
         write(sock, message, strlen(message));
+
 
     }while(error != 0);
 
@@ -68,11 +69,11 @@ void *connection_handler (void *socket_desc) {
                 split_str(8, strlen(client_message), client_message, buffer_message);
                 i = find_contact_by_user(buffer_message);
                 if (i == -1) {
-                    strcpy(message, "system>> This nickname isn't exist.");
+                    strcpy(message, "0server>> This nickname isn't exist.");
                 }
                 else {
                     receiver_sock = i;
-                    sprintf(message, "Initial chat room with %s - %d", buffer_message, receiver_sock);
+                    sprintf(message, "0server>>Initial chat room with %s - %d", buffer_message, receiver_sock);
                 }
 
                 write(sock, message, strlen(message));
@@ -84,7 +85,7 @@ void *connection_handler (void *socket_desc) {
 
             if (receiver_sock == -1) {
 
-                strcpy(message, "server>> Please /talkto for enter nickname who you want to chat.");
+                strcpy(message, "0server>> Please /talkto for enter nickname who you want to chat.");
                 write(sock, message, strlen(message));
 
             }
@@ -92,9 +93,9 @@ void *connection_handler (void *socket_desc) {
 
                 //Echo mssg to client destination
                 printf("Recv from %d to send %d\n", sock, receiver_sock);
-                sprintf(buffer_message, "%s>> %s", username, client_message);
-                write(receiver_sock, buffer_message, strlen(buffer_message));
-                
+                sprintf(message, "0%s>> %s", username, client_message);
+                write(receiver_sock, message, strlen(message));
+
             }
 
         }

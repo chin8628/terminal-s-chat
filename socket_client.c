@@ -51,10 +51,15 @@ void* typing_func(void) {
             draw_old_line(global_display, 2, buffer_int);
         }
         else {
+            //Draw_new line to display message
             strcpy(message_buffer_2, "you>> ");
             strcat(message_buffer_2, message_buffer);
             draw_new(global_display, message_buffer_2);
-            if(send_data(message_buffer) == 0)
+
+            //Set protocal to send packet
+            strcpy(message_buffer_2, "0");
+            strcpy(message_buffer_2, message_buffer);
+            if(send_data(message_buffer_2) == 0)
                 draw_new(global_display, "system>> Send failed");
         }
 
@@ -66,17 +71,19 @@ void* typing_func(void) {
 
 void* display_func(void) {
 
-    char message_buffer[LENGHT_MESSAGE];
+    char message_buffer[LENGHT_MESSAGE], message_buffer_2[LENGHT_MESSAGE];
 
     while (state == 0) {
 
         if (recieve_data(LENGHT_MESSAGE, message_buffer) == 0)
             draw_new(global_display, "system>> recieve error");
 
-        draw_new(global_display, message_buffer);
+        split_str(1, strlen(message_buffer), message_buffer, message_buffer_2);
+        draw_new(global_display, message_buffer_2);
 
         //Reset value in message_buffer for check while loop's condition
         strcpy(message_buffer, "");
+        strcpy(message_buffer_2, "");
 
     }
 
@@ -141,9 +148,6 @@ int main(int argc , char *argv[]) {
 
     //Initial connection server - client
     initial_connection("127.0.0.1", 8888);
-
-    recieve_data(LENGHT_MESSAGE, message_buffer);
-    draw_new(display, message_buffer);
 
     //prepare to pthread_create with WINDOW *buffer_window[2];
     pthread_t typing_thread, display_thread;
