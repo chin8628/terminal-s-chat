@@ -79,6 +79,11 @@ void *connection_handler (void *socket_desc) {
                 write(sock, message, strlen(message));
 
             }
+            else if (split_strcmp(0, 6, client_message, 0, 6, "/untalk")) {
+                receiver_sock = -1;
+                sprintf(message, "0server>> Untalk is successful.");
+                write(sock, message, strlen(message));
+            }
 
         }
         else {
