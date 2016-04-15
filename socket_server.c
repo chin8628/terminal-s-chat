@@ -153,8 +153,12 @@ void *connection_handler (void *socket_desc) {
 int main (int argc, char *argv[]) {
 
     int socket_desc, new_socket, c, *new_sock;
+    int port;
     struct sockaddr_in server, client;
     char *message;
+
+    port = atoi(argv[1]);
+    printf("Your server run on port %d.\n", port);
 
     initial_username_listed();
 
@@ -167,7 +171,7 @@ int main (int argc, char *argv[]) {
     //Prepare the sockaddr_in struct
     server.sin_family = AF_INET;
     server.sin_addr.s_addr = INADDR_ANY;
-    server.sin_port = htons( 8888 );
+    server.sin_port = htons(port);
 
     //Bind socket
     if( bind(socket_desc,(struct sockaddr *)&server , sizeof(server)) < 0)
