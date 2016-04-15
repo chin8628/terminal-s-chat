@@ -75,6 +75,13 @@ void* typing_func(void) {
             buffer_int = atoi(message_buffer_2);
             draw_old_line(global_display, 2, buffer_int);
         }
+        else if (split_strcmp(0, 4, "/help", 0, 4, message_buffer)){
+            draw_new(global_display, "system>> ### THIS IS HELP! ###");
+            draw_new(global_display, "system>> \":q!\" to exit program.");
+            draw_new(global_display, "system>> \"/talkto [nickname]\" to choose contact.");
+            draw_new(global_display, "system>> \"/untalk\" to remove contact that we are talking.");
+            draw_new(global_display, "system>> \"/upload [file]\" to upload file to client that you are talking.");
+        }
         else {
             //Draw_new line to display message
             strcpy(message_buffer_2, "you>> ");
@@ -195,10 +202,6 @@ int main(int argc , char *argv[]) {
     draw_new(display, "--------------------------------------------------\n");
 
     draw_new(display, "system>> Terminal-chat is started.");
-    draw_new(display, "system>> \":q!\" to exit program.");
-    draw_new(display, "system>> \"/talkto [nickname]\" to choose contact.");
-    draw_new(display, "system>> \"/untalk\" to remove contact that we are talking.");
-    draw_new(display, "system>> \"/upload [file]\" to upload file to client that you are talking.");
 
     //Initial connection server - client
     initial_connection("127.0.0.1", 8888);
