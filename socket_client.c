@@ -11,11 +11,13 @@
 #include "connection_clent.h"
 #include "chat_library.h"
 
+#define LENGHT_USERNAME 255
 #define LENGHT_MESSAGE 255
 
 WINDOW *global_typing;
 WINDOW *global_display;
 int state = 0, display_height;
+char username[LENGHT_USERNAME] = "";
 
 void *display_func();
 void *typing_func();
@@ -24,7 +26,11 @@ void* typing_func(void) {
 
     char message_buffer[LENGHT_MESSAGE];
     char message_buffer_2[LENGHT_MESSAGE];
+    char confirm_file[LENGHT_MESSAGE];
+    char filename[LENGHT_MESSAGE];
+    char ch;
     int buffer_int;
+    FILE *fp;
 
     while (state == 0) {
 
@@ -39,6 +45,25 @@ void* typing_func(void) {
             //set state to stop all function
             state = 1;
             return 0;
+        }
+        else if (split_strcmp(0, 6, "/upload", 0, 6, message_buffer)){
+            split_str(8, strlen(message_buffer), message_buffer, filename);
+            sprintf(message_buffer, "3system>> Sending file to you: %s", filename);
+            send_data(message_buffer);
+
+            draw_new(global_display, "system>> Uploding...");
+
+            fp = fopen(filename, "r");
+            while( ( ch = fgetc(fp) ) != EOF ){
+                if(send_data(&ch) == 0)
+                    draw_new(global_display, "system>> Send failed");
+            }
+            fclose(fp);
+            draw_new(global_display, "system>> Done!");
+
+            sprintf(message_buffer, "3system>> %s is successful to send file to you.", username);
+            send_data(message_buffer);
+
         }
         else if (split_strcmp(0, 2, "/up", 0, 2, message_buffer)){
             split_str(4, strlen(message_buffer), message_buffer, message_buffer_2);
@@ -57,8 +82,7 @@ void* typing_func(void) {
             draw_new(global_display, message_buffer_2);
 
             //Set protocal to send packet
-            strcpy(message_buffer_2, "0");
-            strcpy(message_buffer_2, message_buffer);
+            sprintf(message_buffer_2, "0%s", message_buffer);
             if(send_data(message_buffer_2) == 0)
                 draw_new(global_display, "system>> Send failed");
         }
@@ -71,15 +95,42 @@ void* typing_func(void) {
 
 void* display_func(void) {
 
+    int i, j;
     char message_buffer[LENGHT_MESSAGE], message_buffer_2[LENGHT_MESSAGE];
+    char filename[LENGHT_MESSAGE];
+    char confirm_file[LENGHT_MESSAGE];
+    FILE *fp;
 
     while (state == 0) {
 
         if (recieve_data(LENGHT_MESSAGE, message_buffer) == 0)
             draw_new(global_display, "system>> recieve error");
 
-        split_str(1, strlen(message_buffer), message_buffer, message_buffer_2);
-        draw_new(global_display, message_buffer_2);
+        //draw_new(global_display, message_buffer);
+        if (message_buffer[0] == '0') {
+            split_str(1, strlen(message_buffer), message_buffer, message_buffer_2);
+            draw_new(global_display, message_buffer_2);
+        }
+        else if (message_buffer[0] == '1') {
+            //nothing here
+        }
+        else if (message_buffer[0] == '2') {
+            split_str(27, strlen(message_buffer) - 2, message_buffer, message_buffer_2);
+            strcpy(username, message_buffer_2);
+            split_str(1, strlen(message_buffer), message_buffer, message_buffer_2);
+            draw_new(global_display, message_buffer_2);
+        }
+        else if (message_buffer[0] == '3') {
+            split_str(1, strlen(message_buffer), message_buffer, message_buffer_2);
+            draw_new(global_display, message_buffer_2);
+            split_str(31, strlen(message_buffer) - 1, message_buffer, filename);
+        }
+        else {
+            sprintf(message_buffer_2, "downloaded/%s", filename);
+            fp = fopen(message_buffer_2, "w");
+            fprintf(fp, "%s", message_buffer);
+            fclose(fp);
+        }
 
         //Reset value in message_buffer for check while loop's condition
         strcpy(message_buffer, "");
@@ -145,6 +196,7 @@ int main(int argc , char *argv[]) {
 
     draw_new(display, "system>> Terminal-chat is started.");
     draw_new(display, "system>> type \":q!\" to exit program.");
+    draw_new(display, "system>> type \"/talkto [nickname]\" for choose contact.");
 
     //Initial connection server - client
     initial_connection("127.0.0.1", 8888);

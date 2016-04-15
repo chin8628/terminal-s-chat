@@ -36,7 +36,8 @@ void *connection_handler (void *socket_desc) {
     //Receive username and add address of sock's var into Global Table Socket
     do{
 
-        read_size = recv(sock, username, LENGHT_USERNAME, 0);
+        read_size = recv(sock, buffer_message, LENGHT_USERNAME, 0);
+        split_str(1, strlen(buffer_message), buffer_message, username);
         username[read_size] = '\0';
 
         error = add_user(username, sock);
@@ -47,9 +48,7 @@ void *connection_handler (void *socket_desc) {
             sprintf(message, "0server>> Name error.");
         }
         else {
-            sprintf(message, "0server>> Your nickname is %s.\n", username);
-            strcat(message, "server>> OK, Let choose your friend to chat with.\n");
-            strcat(message, "server>> type \"/talkto [nickname]\" for choose contact.");
+            sprintf(message, "2server>> Your nickname is %s.", username);
         }
         write(sock, message, strlen(message));
 
@@ -57,9 +56,10 @@ void *connection_handler (void *socket_desc) {
     }while(error != 0);
 
     //Receive a mssg from client
-    while ( (read_size = recv(sock, client_message, LENGHT_MESSAGE, 0)) > 0 ) {
+    while ( (read_size = recv(sock, buffer_message, LENGHT_MESSAGE, 0)) > 0 ) {
 
-        client_message[read_size] = '\0';
+        buffer_message[read_size] = '\0';
+        split_str(1, strlen(buffer_message), buffer_message, client_message);
 
         //Check if get command from user
         if (client_message[0] == '/') {
@@ -73,7 +73,7 @@ void *connection_handler (void *socket_desc) {
                 }
                 else {
                     receiver_sock = i;
-                    sprintf(message, "0server>>Initial chat room with %s - %d", buffer_message, receiver_sock);
+                    sprintf(message, "0server>> Initial chat room with %s - %d", buffer_message, receiver_sock);
                 }
 
                 write(sock, message, strlen(message));
@@ -89,12 +89,19 @@ void *connection_handler (void *socket_desc) {
                 write(sock, message, strlen(message));
 
             }
-            else {
+            else if (buffer_message[0] == '0'){
 
                 //Echo mssg to client destination
                 printf("Recv from %d to send %d\n", sock, receiver_sock);
-                sprintf(message, "0%s>> %s", username, client_message);
+                sprintf(message, "%c%s>> %s", buffer_message[0], username, client_message);
                 write(receiver_sock, message, strlen(message));
+
+            }
+            else {
+
+                //Send file to another client
+                printf("Recv from %d to send %d\n", sock, receiver_sock);
+                write(receiver_sock, buffer_message, strlen(buffer_message));
 
             }
 
