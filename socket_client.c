@@ -95,7 +95,8 @@ void* typing_func(void) {
             draw_new(global_display, "system>> \"/find [word]\" to find number of line that word was display.");
         }
         else if (split_strcmp(0, 4, "/find", 0, 4, message_buffer)){
-            draw_new(global_display, "you>> /find");
+            sprintf(message_buffer_2, "you>> %s", message_buffer);
+            draw_new(global_display, message_buffer_2);
             split_str(6, strlen(message_buffer) - 1, message_buffer, message_buffer_2);
             search(message_buffer_2, global_display);
         }
