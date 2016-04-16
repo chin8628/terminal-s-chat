@@ -40,6 +40,12 @@ void* typing_func(void) {
         strcpy(message_buffer_2, "");
 
         wscanw(global_typing, " %[^\n]s", message_buffer);
+        while (strlen(message_buffer) > 200) {
+            werase(global_typing);
+            draw_new(global_display, "system>> Message cannot more than 200 characters.");
+            wscanw(global_typing, " %[^\n]s", message_buffer);
+        }
+
 
         //Check exit command
         if (strcmp(message_buffer, ":q!") == 0) {
