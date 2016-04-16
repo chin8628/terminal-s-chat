@@ -30,7 +30,7 @@ void *connection_handler (void *socket_desc) {
 
     //Reply to the client
     strcpy(message, "0server>> Hello Client , We was already connected together!\n");
-    strcat(message, "server>> Let introduce yourself, What's your nickname?");
+    strcat(message, "         Let introduce yourself, What's your nickname?");
     write(sock ,message ,strlen(message));
 
     //Receive username and add address of sock's var into Global Table Socket
@@ -88,7 +88,7 @@ void *connection_handler (void *socket_desc) {
                 struct node *current;
             	current = root;
                 sprintf(message, "0server>> ----------- User List -----------\n");
-                strcat(message, "server>> ");
+                strcat(message, "         ");
                 i = 0;
             	while(current->next != 0){
             		current = current->next;
