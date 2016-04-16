@@ -17,6 +17,7 @@
 
 WINDOW *global_typing;
 WINDOW *global_display;
+pthread_t *global_typing_thread, *global_display_thread;
 int state = 0, display_height;
 char username[LENGHT_USERNAME] = "";
 
@@ -51,7 +52,6 @@ void* typing_func(void) {
         if (strcmp(message_buffer, ":q!") == 0) {
             //set state to stop all function
             state = 1;
-            return 0;
         }
         else if (split_strcmp(0, 6, "/upload", 0, 6, message_buffer)){
             split_str(8, strlen(message_buffer), message_buffer, filename);
@@ -120,6 +120,9 @@ void* typing_func(void) {
 
     }
 
+    pthread_cancel(*global_display_thread);
+    return 0;
+
 }
 
 void* display_func(void) {
@@ -166,6 +169,8 @@ void* display_func(void) {
         strcpy(message_buffer_2, "");
 
     }
+
+    return 0;
 
 }
 
@@ -235,12 +240,17 @@ int main(int argc , char *argv[]) {
 
     //prepare to pthread_create with WINDOW *buffer_window[2];
     pthread_t typing_thread, display_thread;
+    global_typing_thread = &typing_thread;
+    global_display_thread = &display_thread;
     pthread_create( &typing_thread, NULL, (void *)typing_func, NULL);
     pthread_create( &display_thread, NULL, (void *)display_func, NULL );
 
-    while (state == 0) {
-        //do nothing
-    }
+    pthread_join( typing_thread, NULL);
+    pthread_join( display_thread, NULL);
+
+    // while (state == 0) {
+    //     //do nothing
+    // }
 
     draw_new(display, "\n------------------------------");
     draw_new(display, "Good bye, see you again! owo)/\n");
