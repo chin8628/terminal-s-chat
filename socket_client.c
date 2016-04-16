@@ -95,6 +95,11 @@ void* typing_func(void) {
             split_str(6, strlen(message_buffer) - 1, message_buffer, message_buffer_2);
             search(message_buffer_2, global_display);
         }
+        else if (split_strcmp(0, 7, "/watline", 0, 7, message_buffer)){
+            //bottom_line come from buffer_screen.h
+            sprintf(message_buffer, "system>> v This is lines number %d. v", bottom_line);
+            draw_new(global_display, message_buffer);
+        }
         else {
             //Draw_new line to display message
             strcpy(message_buffer_2, "you>> ");
