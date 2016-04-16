@@ -89,6 +89,10 @@ void* typing_func(void) {
             draw_new(global_display, "system>> \"/talkto [nickname]\" to choose contact.");
             draw_new(global_display, "system>> \"/untalk\" to remove contact that we are talking.");
             draw_new(global_display, "system>> \"/upload [file]\" to upload file to client that you are talking.");
+            draw_new(global_display, "system>> \"/watline\" to show number of latest line");
+            draw_new(global_display, "system>> \"/up [amount of line]\" to scroll screen up n lines.");
+            draw_new(global_display, "system>> \"/down [amount of line]\" to scroll screen down n lines.");
+            draw_new(global_display, "system>> \"/find [word]\" to find number of line that word was display.");
         }
         else if (split_strcmp(0, 4, "/find", 0, 4, message_buffer)){
             draw_new(global_display, "you>> /find");
