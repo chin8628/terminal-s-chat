@@ -93,6 +93,7 @@ void* typing_func(void) {
             draw_new(global_display, "system>> \"/up [amount of line]\" to scroll screen up n lines.");
             draw_new(global_display, "system>> \"/down [amount of line]\" to scroll screen down n lines.");
             draw_new(global_display, "system>> \"/find [word]\" to find number of line that word was display.");
+            draw_new(global_display, "system>> \"/contact\" to show all user on server.");
         }
         else if (split_strcmp(0, 4, "/find", 0, 4, message_buffer)){
             sprintf(message_buffer_2, "you>> %s", message_buffer);
