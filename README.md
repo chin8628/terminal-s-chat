@@ -1,12 +1,10 @@
 # Terminal's chat
-Chat service (Contained both server and client) for Linux. Communicate through socket packet across the network.
-
-This project was made only to study C programming. We don't take any responsibility from damage this might cause.
+Chat service (Contained both server and client) for Linux. Communicate through socket packet across the network. This project was made only to study C programming. We don't take any responsibility from damage this might cause.
 
 ##How to use.
 
 ####Server side
-  Run server file with `./server [port
+  Run server file with `./server [port]`
 
 ####Client side 
   Connect client with server by `./client [ip_address] [port]`
