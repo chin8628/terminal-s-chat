@@ -47,6 +47,11 @@ void* typing_func(void) {
             wscanw(global_typing, " %[^\n]s", message_buffer);
         }
 
+        //Draw_new line to display message
+        strcpy(message_buffer_2, "you>> ");
+        strcat(message_buffer_2, message_buffer);
+        draw_new(global_display, message_buffer_2);
+
 
         //Check exit command
         if (strcmp(message_buffer, ":q!") == 0) {
@@ -73,9 +78,6 @@ void* typing_func(void) {
                 fclose(fp);
                 draw_new(global_display, "system>> Done!");
 
-                sprintf(message_buffer, "3system>> %s is successful to send file to you.", username);
-                send_data(message_buffer);
-
             }
             else if (split_strcmp(0, 2, "/up", 0, 2, message_buffer)){
 
@@ -93,7 +95,6 @@ void* typing_func(void) {
             }
             else if (split_strcmp(0, 4, "/help", 0, 4, message_buffer)){
 
-                draw_new(global_display, "you>> /help");
                 draw_new(global_display, "system>> ### THIS IS HELP! ###");
                 draw_new(global_display, "system>> \":q!\" to exit program.");
                 draw_new(global_display, "system>> \"/talkto [nickname]\" to choose contact.");
@@ -108,8 +109,6 @@ void* typing_func(void) {
             }
             else if (split_strcmp(0, 4, "/find", 0, 4, message_buffer)){
 
-                sprintf(message_buffer_2, "you>> %s", message_buffer);
-                draw_new(global_display, message_buffer_2);
                 split_str(6, strlen(message_buffer) - 1, message_buffer, message_buffer_2);
                 search(message_buffer_2, global_display);
 
@@ -136,11 +135,6 @@ void* typing_func(void) {
             }
         }
         else {
-
-            //Draw_new line to display message
-            strcpy(message_buffer_2, "you>> ");
-            strcat(message_buffer_2, message_buffer);
-            draw_new(global_display, message_buffer_2);
 
             //Set protocal to send packet
             sprintf(message_buffer_2, "0%s", message_buffer);
