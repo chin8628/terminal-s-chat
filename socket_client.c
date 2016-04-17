@@ -53,60 +53,90 @@ void* typing_func(void) {
             //set state to stop all function
             state = 1;
         }
-        else if (split_strcmp(0, 6, "/upload", 0, 6, message_buffer)){
-            split_str(8, strlen(message_buffer), message_buffer, filename);
-            sprintf(message_buffer, "3system>> Sending file to you: %s", filename);
-            send_data(message_buffer);
+        else if (message_buffer[0] == '/') {
 
-            draw_new(global_display, "system>> Uploding...");
+            if (split_strcmp(0, 6, "/upload", 0, 6, message_buffer)){
 
-            fp = fopen(filename, "r");
-            while( ( ch = fgetc(fp) ) != EOF ){
-                if(send_data(&ch) == 0)
-                    draw_new(global_display, "system>> Send failed");
+                split_str(8, strlen(message_buffer), message_buffer, filename);
+                sprintf(message_buffer, "3system>> Sending file to you: %s", filename);
+                send_data(message_buffer);
+
+                draw_new(global_display, "system>> Uploding...");
+
+                fp = fopen(filename, "r");
+                while( ( ch = fgetc(fp) ) != EOF ){
+
+                    if(send_data(&ch) == 0)
+                        draw_new(global_display, "system>> Send failed");
+
+                }
+                fclose(fp);
+                draw_new(global_display, "system>> Done!");
+
+                sprintf(message_buffer, "3system>> %s is successful to send file to you.", username);
+                send_data(message_buffer);
+
             }
-            fclose(fp);
-            draw_new(global_display, "system>> Done!");
+            else if (split_strcmp(0, 2, "/up", 0, 2, message_buffer)){
 
-            sprintf(message_buffer, "3system>> %s is successful to send file to you.", username);
-            send_data(message_buffer);
+                split_str(4, strlen(message_buffer), message_buffer, message_buffer_2);
+                buffer_int = atoi(message_buffer_2);
+                draw_old_line(global_display, 1, buffer_int);
 
-        }
-        else if (split_strcmp(0, 2, "/up", 0, 2, message_buffer)){
-            split_str(4, strlen(message_buffer), message_buffer, message_buffer_2);
-            buffer_int = atoi(message_buffer_2);
-            draw_old_line(global_display, 1, buffer_int);
-        }
-        else if (split_strcmp(0, 4, "/down", 0, 4, message_buffer)){
-            split_str(6, strlen(message_buffer), message_buffer, message_buffer_2);
-            buffer_int = atoi(message_buffer_2);
-            draw_old_line(global_display, 2, buffer_int);
-        }
-        else if (split_strcmp(0, 4, "/help", 0, 4, message_buffer)){
-            draw_new(global_display, "you>> /help");
-            draw_new(global_display, "system>> ### THIS IS HELP! ###");
-            draw_new(global_display, "system>> \":q!\" to exit program.");
-            draw_new(global_display, "system>> \"/talkto [nickname]\" to choose contact.");
-            draw_new(global_display, "system>> \"/untalk\" to remove contact that we are talking.");
-            draw_new(global_display, "system>> \"/upload [file]\" to upload file to client that you are talking.");
-            draw_new(global_display, "system>> \"/watline\" to show number of latest line");
-            draw_new(global_display, "system>> \"/up [amount of line]\" to scroll screen up n lines.");
-            draw_new(global_display, "system>> \"/down [amount of line]\" to scroll screen down n lines.");
-            draw_new(global_display, "system>> \"/find [word]\" to find number of line that word was display.");
-            draw_new(global_display, "system>> \"/contact\" to show all user on server.");
-        }
-        else if (split_strcmp(0, 4, "/find", 0, 4, message_buffer)){
-            sprintf(message_buffer_2, "you>> %s", message_buffer);
-            draw_new(global_display, message_buffer_2);
-            split_str(6, strlen(message_buffer) - 1, message_buffer, message_buffer_2);
-            search(message_buffer_2, global_display);
-        }
-        else if (split_strcmp(0, 7, "/watline", 0, 7, message_buffer)){
-            //bottom_line come from buffer_screen.h
-            sprintf(message_buffer, "system>> v This is lines number %d. v", bottom_line);
-            draw_new(global_display, message_buffer);
+            }
+            else if (split_strcmp(0, 4, "/down", 0, 4, message_buffer)){
+
+                split_str(6, strlen(message_buffer), message_buffer, message_buffer_2);
+                buffer_int = atoi(message_buffer_2);
+                draw_old_line(global_display, 2, buffer_int);
+
+            }
+            else if (split_strcmp(0, 4, "/help", 0, 4, message_buffer)){
+
+                draw_new(global_display, "you>> /help");
+                draw_new(global_display, "system>> ### THIS IS HELP! ###");
+                draw_new(global_display, "system>> \":q!\" to exit program.");
+                draw_new(global_display, "system>> \"/talkto [nickname]\" to choose contact.");
+                draw_new(global_display, "system>> \"/untalk\" to remove contact that we are talking.");
+                draw_new(global_display, "system>> \"/upload [file]\" to upload file to client that you are talking.");
+                draw_new(global_display, "system>> \"/watline\" to show number of latest line");
+                draw_new(global_display, "system>> \"/up [amount of line]\" to scroll screen up n lines.");
+                draw_new(global_display, "system>> \"/down [amount of line]\" to scroll screen down n lines.");
+                draw_new(global_display, "system>> \"/find [word]\" to find number of line that word was display.");
+                draw_new(global_display, "system>> \"/contact\" to show all user on server.");
+
+            }
+            else if (split_strcmp(0, 4, "/find", 0, 4, message_buffer)){
+
+                sprintf(message_buffer_2, "you>> %s", message_buffer);
+                draw_new(global_display, message_buffer_2);
+                split_str(6, strlen(message_buffer) - 1, message_buffer, message_buffer_2);
+                search(message_buffer_2, global_display);
+
+            }
+            else if (split_strcmp(0, 7, "/watline", 0, 7, message_buffer)){
+
+                //bottom_line come from buffer_screen.h
+                sprintf(message_buffer, "system>> v This is lines number %d. v", bottom_line);
+                draw_new(global_display, message_buffer);
+
+            }
+            else if (
+                    split_strcmp(0, 6, "/talkto", 0, 6, message_buffer) ||
+                    split_strcmp(0, 6, "/untalk", 0, 6, message_buffer) ||
+                    split_strcmp(0, 7, "/contact", 0, 7, message_buffer)) {
+
+                sprintf(message_buffer_2, "0%s", message_buffer);
+                send_data(message_buffer_2);
+            }
+            else {
+
+                draw_new(global_display, "system>> Command not found.");
+
+            }
         }
         else {
+
             //Draw_new line to display message
             strcpy(message_buffer_2, "you>> ");
             strcat(message_buffer_2, message_buffer);
@@ -116,6 +146,7 @@ void* typing_func(void) {
             sprintf(message_buffer_2, "0%s", message_buffer);
             if(send_data(message_buffer_2) == 0)
                 draw_new(global_display, "system>> Send failed");
+
         }
 
         werase(global_typing);
