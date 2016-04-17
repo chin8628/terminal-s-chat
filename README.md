@@ -18,6 +18,5 @@ This project was made only to study C programming. We don't take any responsibil
 We don't have time to provide you with document or guideline for these piles of shit code. You can curse us all you want, but we don't even care.
 
 
-Sincerely yours.
-
+Sincerely yours. <br />
 Development team
