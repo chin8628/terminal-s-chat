@@ -66,16 +66,25 @@ void* typing_func(void) {
                 sprintf(message_buffer, "3system>> Sending file to you: %s", filename);
                 send_data(message_buffer);
 
-                draw_new(global_display, "system>> Uploding...");
+                sleep(1);
+
+                draw_new(global_display, "system>> Uploading...");
 
                 fp = fopen(filename, "r");
                 while( ( ch = fgetc(fp) ) != EOF ){
 
-                    if(send_data(&ch) == 0)
+                    sprintf(message_buffer, "4%c", ch);
+
+                    if(send_data(message_buffer) == 0)
                         draw_new(global_display, "system>> Send failed");
 
                 }
                 fclose(fp);
+
+                sleep(1);
+
+                strcpy(message_buffer, "5");
+                send_data(message_buffer);
                 draw_new(global_display, "system>> Done!");
 
             }
@@ -154,7 +163,7 @@ void* typing_func(void) {
 
 void* display_func(void) {
 
-    int i, j;
+    int i, j, error;
     char message_buffer[LENGHT_MESSAGE], message_buffer_2[LENGHT_MESSAGE];
     char filename[LENGHT_MESSAGE];
     char confirm_file[LENGHT_MESSAGE];
@@ -171,7 +180,7 @@ void* display_func(void) {
             draw_new(global_display, message_buffer_2);
         }
         else if (message_buffer[0] == '1') {
-            //nothing here
+            //do nothing
         }
         else if (message_buffer[0] == '2') {
             split_str(27, strlen(message_buffer) - 2, message_buffer, message_buffer_2);
@@ -183,12 +192,18 @@ void* display_func(void) {
             split_str(1, strlen(message_buffer), message_buffer, message_buffer_2);
             draw_new(global_display, message_buffer_2);
             split_str(31, strlen(message_buffer) - 1, message_buffer, filename);
-        }
-        else {
+
             sprintf(message_buffer_2, "downloaded/%s", filename);
-            fp = fopen(message_buffer_2, "w");
-            fprintf(fp, "%s", message_buffer);
+            fp = fopen(message_buffer_2, "w+");
+            error = 1;
+            do {
+                recieve_file(message_buffer);
+                fprintf(fp, "%c", message_buffer[1]);
+            }while(message_buffer[0] != '5');
             fclose(fp);
+
+            draw_new(global_display, "system>> Downloaded file success.");
+
         }
 
         //Reset value in message_buffer for check while loop's condition

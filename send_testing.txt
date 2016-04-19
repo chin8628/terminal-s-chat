@@ -1,4 +1,6 @@
 This is send test file!
 Important!! Don't use number in this file because number is prefix protocal of this program.
 
+Test: 01234567890
+
 Hello, World!

@@ -52,6 +52,31 @@ int recieve_data(int lenght, char *message_buffer){
 
 }
 
+int recieve_file(char *message_buffer){
+
+    char server_reply[2];
+    int read_size;
+
+    // recieve packet from server
+    read_size = recv(socket_desc, server_reply , 2 , 0);
+
+    if (read_size > 0) {
+        /*
+            set end point string on last character by calculate read_size
+            In normal, recv don't clear last buffer string
+            So we must set end of string to prevent bug from last buffer string
+        */
+        server_reply[read_size] = '\0';
+        strcpy(message_buffer, server_reply);
+        return 1;
+    }
+    else {
+        return 0;
+    }
+
+}
+
+
 int send_data(char *text) {
 
     return send(socket_desc , text , strlen(text) , 0) > 0;
