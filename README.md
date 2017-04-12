@@ -3,15 +3,15 @@ Chat service (Contained both server and client) for Linux. Communicate through s
 
 This project was made only to study C programming. We don't take any responsibility from damage this might cause.
 
-##How to use.
+## How to use.
 
-####Server side
+#### Server side
   Run server file with `./server [port]`
 
-####Client side 
+#### Client side 
   Connect client with server by `./client [ip_address] [port]`
   
-##FYI
+## FYI
 
 **If you want to challenge yourself by improving these piles of code that you will curse it out at every lines you read, please feel free to fork it and let us know.**
 
